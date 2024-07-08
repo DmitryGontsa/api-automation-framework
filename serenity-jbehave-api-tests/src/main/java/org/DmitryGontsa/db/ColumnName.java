@@ -1,4 +1,4 @@
-package com.hillel.ua.db;
+package org.DmitryGontsa.db;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,12 +1,11 @@
-package com.hillel.ua.serenity.steps.db;
+package serenity.steps.db;
 
-import com.hillel.ua.db.DataBaseUtils;
-import com.hillel.ua.db.dto.Student;
-import com.hillel.ua.db.dto.User;
+import org.DmitryGontsa.db.DataBaseUtils;
+import org.DmitryGontsa.db.dto.Student;
+import org.DmitryGontsa.db.dto.User;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.Map;
 
 public class SqlServerSteps {
 

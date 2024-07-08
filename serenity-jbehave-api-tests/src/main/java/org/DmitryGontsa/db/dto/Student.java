@@ -1,4 +1,4 @@
-package com.hillel.ua.db.dto;
+package org.DmitryGontsa.db.dto;
 
 import com.hillel.ua.db.ColumnName;
 import lombok.Data;

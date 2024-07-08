@@ -1,5 +1,3 @@
-package com.hillel.ua;
-
 import net.serenitybdd.jbehave.SerenityStories;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.steps.ParameterControls;

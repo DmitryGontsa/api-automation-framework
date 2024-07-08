@@ -1,7 +1,7 @@
 package org.DmitryGontsa.db;
 
 import org.DmitryGontsa.common.PropertiesReader;
-import com.hillel.ua.logging.Logger;
+import org.DmitryGontsa.logging.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -46,44 +46,36 @@ public class DataBaseUtils {
 
     public static <T> List<T> executeRetrieveAsListObjects(final String query, final Class<T> returnType) {//
 
-        final List<Map<String, String>> results = executeRetrieve(query); //Вычитали все данные из таблицы
+        final List<Map<String, String>> results = executeRetrieve(query);
 
-        final List<T> records = new ArrayList<>(); //Создали коллекцию которая будет хранить считаные данные из базы данных в виде листа обджектов
+        final List<T> records = new ArrayList<>();
 
         try {
-            for (final Map<String, String> row : results) { //Идем в цикле по строкам, считаным из базы данных
+            for (final Map<String, String> row : results) {
 
-                final T instance = returnType.getDeclaredConstructor().newInstance(); //Для каждой строки из базы нам надо создать новый обджект.
-                                                                                      //getDeclaredConstructor() - получаем дефолтный конструктор из обджекта
-                                                                                      //newInstance() - создаем новый обджект. Равносильно A a = new A(); ,
-                                                                                    // где new A(); - это newInstance() только через рефлексию
+                final T instance = returnType.getDeclaredConstructor().newInstance();
 
-                final List<Field> fields = Arrays.asList(instance.getClass().getDeclaredFields()); //Получаем список полей нашего обджекта,
-                                                                                                    // для того чтоб сравнить каждое из них и записать туда значение
-                fields.forEach(field -> { //Итерируемся по списку полей
-                    final String objectFieldName = field.getAnnotation(com.hillel.ua.db.ColumnName.class).name(); //Если в текущей строке, которую мы вычитали из базы данных
-                                                                                                // и положили в коллецию *results* есть поле
-                                                                                            // (ключ) с именем нашего поля (полученого с аннотации  ColumnName.class.name())
+                final List<Field> fields = Arrays.asList(instance.getClass().getDeclaredFields());
+
+                fields.forEach(field -> {
+                    final String objectFieldName = field.getAnnotation(ColumnName.class).name();
+
                     if (row.containsKey(objectFieldName)) {
 
-                        field.setAccessible(true); // Тогда разрешаем запись в это поле для нашего обджектаб путем установки флага в режим тру
+                        field.setAccessible(true);
 
                         try {
-
-                            final String dbColumnValue = row.get(objectFieldName); // Получаем знаение из колонки
-
-                            field.set(instance, dbColumnValue); // Пишем это значение в поле нашего обджекта
-
+                            final String dbColumnValue = row.get(objectFieldName);
+                            field.set(instance, dbColumnValue);
                         } catch (final IllegalAccessException e) {
-
-                            throw new IllegalStateException("An Exception occurred!", e); //Если что-то пойдет не так, то выбросим ексепшин
+                            throw new IllegalStateException("An Exception occurred!", e);
                         }
                     }
-                }); //И так для каждой записи в базе данных
-
-                records.add(instance); //Добавляем каждый заполненый данными из баз обджект в коллекцию
+                });
+                records.add(instance);
             }
-        } catch (final InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (final InstantiationException | IllegalAccessException | InvocationTargetException |
+                       NoSuchMethodException e) {
             throw new IllegalStateException("An Exception occurred!", e);
         }
         return records;
@@ -92,25 +84,22 @@ public class DataBaseUtils {
     public static List<Map<String, String>> executeRetrieve(final String query) {
         final List<Map<String, String>> rowsData = new ArrayList<>();
         try {
-
             final Statement statement = tryToConnect();
-            final ResultSet resultSet = statement.executeQuery(query); //Данные о таблицу (в том числе и служебная информация: ко-во колонок, строк. итд)
-            final ResultSetMetaData resultSetMetaData = resultSet.getMetaData();  //Служебные данные о таблицеБ которые мы получили из ResultSet
-            final int columnCount = resultSetMetaData.getColumnCount(); //Получили количество колонок в таблице
+            final ResultSet resultSet = statement.executeQuery(query);
+            final ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+            final int columnCount = resultSetMetaData.getColumnCount();
             while (resultSet.next()) {
                 final Map<String, String> columnData = new HashMap<>();
-                for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) { //Цикл по колонкам
+                for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
                     final String columnName = resultSetMetaData.getColumnName(columnIndex);
                     final String columnValue = resultSet.getString(columnIndex);
                     columnData.put(columnName, columnValue);
                 }
                 rowsData.add(columnData);
             }
-
         } catch (final SQLException e) {
             throw new IllegalStateException("Unable to execute query!", e);
         }
-
         return rowsData;
     }
 

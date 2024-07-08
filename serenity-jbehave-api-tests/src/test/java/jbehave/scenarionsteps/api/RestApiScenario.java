@@ -1,8 +1,8 @@
-package com.hillel.ua.jbehave.scenarionsteps.api;
+package jbehave.scenarionsteps.api;
 
-import com.hillel.ua.api.PostsApiSteps;
-import com.hillel.ua.api.dto.PostsDTO;
-import com.hillel.ua.logging.Logger;
+import api.PostsApiSteps;
+import org.DmitryGontsa.api.dto.PostsDTO;
+import org.DmitryGontsa.logging.Logger;
 import io.restassured.response.Response;
 import net.serenitybdd.core.Serenity;
 import net.thucydides.core.annotations.Steps;
@@ -27,12 +27,10 @@ public class RestApiScenario {
     private static final String EXPECTED_POST_DATA_KEY = "expected_post_data_key";
     private static final String UPDATED_POST_DATA_KEY = "updated_post_data_key";
     private static final String FILTERED_POSTS_BY_QUERY_PARAMS_KEY = "filtered_posts_by_query_params_key";
-
     private static final Integer EXPECTED_POST_ID = 1;
 
     @BeforeScenario
     public void deleteApiResources() {
-
         Logger.out.debug("! ----------- Removing Rest API Created Resources ----------- !");
 
         postsApiSteps.removePostById(EXPECTED_POST_ID);

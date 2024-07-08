@@ -2,7 +2,6 @@ package org.DmitryGontsa.common;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.lang.annotation.Annotation;
 import java.util.Optional;
 
 public class UrlBuilder {
@@ -19,18 +18,16 @@ public class UrlBuilder {
     }
 
     public static <T> String buildWholeUrl(final String commonUrl, final Class<T> type) {
-
-        if(type == null) {
+        if (type == null) {
             throw new IllegalStateException("Missing '@PartialUrl' in class!");
         }
 
         final PartialUrl partialUrlValue = type.getAnnotation(PartialUrl.class);
         final String value = partialUrlValue.value();
 
-        if(StringUtils.isNotEmpty(value)) {
+        if (StringUtils.isNotEmpty(value)) {
             return String.format("%s/%s", commonUrl, value);
         }
-
         throw new IllegalStateException("Missing 'Common URL part!'");
     }
 }
